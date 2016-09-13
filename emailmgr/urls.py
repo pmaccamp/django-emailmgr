@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, include, url
+from django.conf.urls include, url
 from django.conf import settings
 from views import email_add, email_list, email_delete, \
             email_send_activation, email_activate, email_make_primary
 
 #add an email to a User account
-urlpatterns = patterns('',
+urlpatterns = [
     url(
         r'^email/add/$', 
         email_add, 
@@ -36,4 +36,4 @@ urlpatterns = patterns('',
         email_list,
         name='emailmgr_email_list'
         ),
-)
+]
