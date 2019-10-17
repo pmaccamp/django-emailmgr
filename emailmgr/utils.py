@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from hashlib import sha1
 from django.utils.translation import gettext_lazy as _
-import defaults
+from . import defaults
 
 # some people might like to user mailer by jtauber, accomodate them
 if "mailer" in settings.INSTALLED_APPS:
@@ -45,7 +45,7 @@ def send_activation(email, is_secure):
         else:
             proto = "http"
 
-    url = u"%s://%s%s" % (proto, unicode(this_site.domain), p)
+    url = "%s://%s%s" % (proto, str(this_site.domain), p)
     context = {"user": email.user, "activate_url": url, "this_site": this_site,"identifier": email.identifier,}
     subject = "".join(render_to_string(get_template("emailmgr_activation_subject.txt"), context).splitlines())
     message = render_to_string(get_template("emailmgr_activation_message.txt"), context)
