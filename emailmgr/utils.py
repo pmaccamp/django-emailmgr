@@ -18,7 +18,7 @@ else:
 # get a random string of known length
 def get_unique_random(length=10):
     randtime = str(time.time()).split('.')[0]
-    rand = ''.join([random.choice(randtime+string.letters+string.digits) for i in range(length)])
+    rand = ''.join([random.choice(randtime+string.ascii_letters+string.digits) for i in range(length)])
     return sha1(rand).hexdigest()[:length]
  
 # given a template name, return its path
