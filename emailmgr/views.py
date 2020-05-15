@@ -9,7 +9,7 @@ from forms import EmailAddressForm
 from models import EmailAddress
 from utils import send_activation, get_template, sort_email
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from signals import user_added_email, user_sent_activation, user_activated_email
 
 @login_required
