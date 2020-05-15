@@ -1,4 +1,4 @@
-from models import EmailAddress
+from .models import EmailAddress
 from django.forms import ModelForm, ValidationError
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -26,7 +26,7 @@ class EmailAddressForm(ModelForm):
             except User.DoesNotExist:
                 return email
         
-        raise ValidationError(u"This email address already in use.")
+        raise ValidationError("This email address already in use.")
 
     def save(self):
         e = EmailAddress(**{'user': self.user, 'email': self.cleaned_data["email"]})
