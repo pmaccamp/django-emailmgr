@@ -32,9 +32,7 @@ def email_add(request):
                               {
                                 'email_list': emails_list,
                                 'email_form': form
-                              },
-                              context_instance=RequestContext(request)
-                              )
+                              })
 
 @login_required
 def email_make_primary(request, identifier="somekey"):
@@ -141,9 +139,7 @@ def email_list(request):
                               {
                                 'email_list': emails_list,
                                 'email_form': form
-                              },
-                              context_instance=RequestContext(request)
-                              )
+                              })
 
 
 
