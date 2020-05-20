@@ -28,7 +28,7 @@ def email_add(request):
     else:
         form = EmailAddressForm(user=request.user)
     emails_list = EmailAddress.objects.filter(user=request.user).order_by(*sort_email())
-    return render_to_response(get_template('emailmgr_email_list.html'),
+    return render(request, 'emailmgr_email_list.html',
                               {
                                 'email_list': emails_list,
                                 'email_form': form
@@ -135,7 +135,7 @@ def email_list(request):
     """
     form = EmailAddressForm(user=request.user)
     emails_list = EmailAddress.objects.filter(user=request.user).order_by(*sort_email())
-    return render_to_response(get_template('emailmgr_email_list.html'),
+    return render(request, 'emailmgr_email_list.html',
                               {
                                 'email_list': emails_list,
                                 'email_form': form
