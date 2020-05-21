@@ -31,12 +31,12 @@ class EmailUniquenessTestCase(TestCase):
         # test against User.email
         # test a unique email address
         form = forms.EmailAddressForm(user=user, data={'email': 'john@example.com'})
-        self.failUnless(form.is_valid())
+        self.assertTrue(form.is_valid())
 
         # test a duplicated email address
         form = forms.EmailAddressForm(user=user, data={'email': 'mike@example.com'})
-        self.failIf(form.is_valid())
-        self.assertEqual(form.errors['email'],[u"This email address already in use."])
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['email'],["This email address already in use."])
 
         # test against EmailAddress.email
         email = EmailAddress(**{'user': user, 'email': 'alvin@example.com'})
@@ -44,12 +44,12 @@ class EmailUniquenessTestCase(TestCase):
         
         # test a duplicated email address
         form = forms.EmailAddressForm(user=user, data={'email': 'alvin@example.com'})
-        self.failIf(form.is_valid())
-        self.assertEqual(form.errors['email'],[u"This email address already in use."])
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['email'],["This email address already in use."])
 
         # test a unique email address
         form = forms.EmailAddressForm(user=user, data={'email': 'sam@example.com'})
-        self.failUnless(form.is_valid())
+        self.assertTrue(form.is_valid())
 
 
 ############################################
@@ -62,10 +62,10 @@ class EmailAutoCreationBySignalsTestCase(TestCase):
     def test_email_add_by_signals(self):
         # check that the first email address was already created by User creation signals
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==1)
-        self.failUnless(e[0].email=='autocreate@example.com')
-        self.failUnless(e[0].is_primary)
-        self.failUnless(e[0].is_active)
+        self.assertTrue(len(e)==1)
+        self.assertTrue(e[0].email=='autocreate@example.com')
+        self.assertTrue(e[0].is_primary)
+        self.assertTrue(e[0].is_active)
 
 ############################################
 class EmailAutoDeletionBySignalsTestCase(TestCase):
@@ -77,15 +77,15 @@ class EmailAutoDeletionBySignalsTestCase(TestCase):
 
         # check that email address was created for testdelete user
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==1)
-        self.failUnless(e[0].email=='dumpall@example.com')
-        self.failUnless(e[0].is_primary)
-        self.failUnless(e[0].is_active)
+        self.assertTrue(len(e)==1)
+        self.assertTrue(e[0].email=='dumpall@example.com')
+        self.assertTrue(e[0].is_primary)
+        self.assertTrue(e[0].is_active)
 
         # delete the user and make sure all his emails are gone too
         u.delete()
         e = EmailAddress.objects.filter(user=u)
-        self.failIf(e)
+        self.assertFalse(e)
 
 
 ############################################
@@ -98,7 +98,7 @@ class EmailAddTestCase(TestCase):
     def test_email_add(self):
         #import pdb; pdb.set_trace()
         retval = self.client.login(username='add', password='1pass')
-        self.failUnless(retval)
+        self.assertTrue(retval)
         
         args = {'email': 'add1@example.com'}
         response = self.client.post(reverse('emailmgr_email_add'), args)
@@ -106,7 +106,7 @@ class EmailAddTestCase(TestCase):
 
         # make sure the email is saved
         e = EmailAddress.objects.get(email='add1@example.com')
-        self.failUnless(e)
+        self.assertTrue(e)
 
         # ensure duplicate email address are rejected
         args = {'email': 'add1@example.com', 'follow': True}
@@ -120,28 +120,28 @@ class EmailAddTestCase(TestCase):
         
         # make sure the new email is in our database
         e = EmailAddress.objects.get(email='add2@example.com')
-        self.failUnless(e)
-        self.failIf(e.is_primary)
-        self.failUnless(e.identifier)
+        self.assertTrue(e)
+        self.assertFalse(e.is_primary)
+        self.assertTrue(e.identifier)
 
         # make sure we have 3 emails for this user
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==3)
+        self.assertTrue(len(e)==3)
 
         user = User.objects.create_user('add3', 'add3@example.com', '1pass')
 
         # make sure we have 4 emails total
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==4)
+        self.assertTrue(len(e)==4)
         
         e = EmailAddress.objects.get(email='add3@example.com')
-        self.failUnless(e)
-        self.failUnless(e.is_primary)
-        self.failUnless(e.is_active)
-        self.failUnless(e.identifier)
+        self.assertTrue(e)
+        self.assertTrue(e.is_primary)
+        self.assertTrue(e.is_active)
+        self.assertTrue(e.identifier)
         
         e1 = EmailAddress.objects.get(user=user)
-        self.failUnless(e==e1)
+        self.assertTrue(e==e1)
 
 class EmailListTestCase(TestCase):
     """Tests for Django emailmgr -- Add Email """
@@ -152,7 +152,7 @@ class EmailListTestCase(TestCase):
     def test_email_list(self):
         # establish a session
         retval = self.client.login(username='list', password='1pass')
-        self.failUnless(retval)
+        self.assertTrue(retval)
 
         # add few emails to user
         args = {'email': 'list1@example.com', 'follow': True}
@@ -165,7 +165,7 @@ class EmailListTestCase(TestCase):
 
         # verify that all emails were added, 2 added by us and 1 by user creation
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==3)
+        self.assertTrue(len(e)==3)
 
         # list all email addresses
         response = self.client.post(reverse('emailmgr_email_list'))        
@@ -186,7 +186,7 @@ class EmailDeleteTestCase(TestCase):
     def test_email_delete(self):
         # establish a session
         retval = self.client.login(username='delete', password='1pass')
-        self.failUnless(retval)
+        self.assertTrue(retval)
         
         # add few emails to user
         args = {'email': 'delete1@example.com', 'follow': True}
@@ -199,7 +199,7 @@ class EmailDeleteTestCase(TestCase):
 
         # verify that all emails were added, 2 by us, 1 by user creation
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==3)
+        self.assertTrue(len(e)==3)
 
         # delete the first email, this is the primary email address, cannot remove
         path = reverse('emailmgr_email_delete', kwargs={'identifier': e[0].identifier})
@@ -219,7 +219,7 @@ class EmailDeleteTestCase(TestCase):
         # delete the second email again
         path = reverse('emailmgr_email_delete', kwargs={'identifier': e[1].identifier})
         response = self.client.get(path, follow=True)     
-        self.failUnless(response.status_code == 404)   
+        self.assertTrue(response.status_code == 404)   
             
         #delete the third email,
         path = reverse('emailmgr_email_delete', kwargs={'identifier': e[2].identifier})
@@ -241,7 +241,7 @@ class EmailActivateTestCase(TestCase):
     def test_email_activate(self):
         # establish a session
         retval = self.client.login(username='activate', password='1pass')
-        self.failUnless(retval)
+        self.assertTrue(retval)
 
         # add few emails to user
         args = {'email': 'activate1@example.com', 'follow': True}
@@ -254,7 +254,7 @@ class EmailActivateTestCase(TestCase):
 
         # verify that all emails were added, 2 by us, 1 by user creation
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==3)
+        self.assertTrue(len(e)==3)
 
         # send activation email for the second email that is not primary
         path = reverse('emailmgr_email_send_activation', kwargs={'identifier': e[1].identifier})
@@ -272,7 +272,7 @@ class EmailActivateTestCase(TestCase):
         self.assertContains(response, "email address is now active", count=1, status_code=200)
 
         e = EmailAddress.objects.get(identifier__iexact=e[1].identifier)
-        self.failUnless(e.is_active)
+        self.assertTrue(e.is_active)
 
 class EmailMakePrimaryTestCase(TestCase):
     """Tests for Django emailmgr -- Make Primary """
@@ -283,7 +283,7 @@ class EmailMakePrimaryTestCase(TestCase):
     def test_email_activate(self):
         # establish a session
         retval = self.client.login(username='primary', password='1pass')
-        self.failUnless(retval)
+        self.assertTrue(retval)
 
         # add few emails to user
         args = {'email': 'primary1@example.com', 'follow': True}
@@ -296,7 +296,7 @@ class EmailMakePrimaryTestCase(TestCase):
 
         # verify that all emails were added, 2 by us, 1 by user creation
         e = EmailAddress.objects.all()
-        self.failUnless(len(e)==3)
+        self.assertTrue(len(e)==3)
 
         # try to make the already primary email primary
         path = reverse('emailmgr_email_make_primary', kwargs={'identifier': e[0].identifier})
@@ -332,7 +332,7 @@ class EmailMakePrimaryTestCase(TestCase):
         self.assertContains(response, "email address is now active", count=1, status_code=200)
 
         email = EmailAddress.objects.get(identifier__iexact=e[1].identifier)
-        self.failUnless(email.is_active)
+        self.assertTrue(email.is_active)
 
         # ok, the second email is activated, now make it primary
         path = reverse('emailmgr_email_make_primary', kwargs={'identifier': e[1].identifier})
@@ -344,9 +344,9 @@ class EmailMakePrimaryTestCase(TestCase):
         self.assertContains(response, "primary address changed", count=1, status_code=200)
 
         email = EmailAddress.objects.get(identifier__iexact=e[1].identifier)
-        self.failUnless(email.is_active)
-        self.failUnless(email.is_primary)
-        self.failUnless(email.email==email.user.email)
+        self.assertTrue(email.is_active)
+        self.assertTrue(email.is_primary)
+        self.assertTrue(email.email==email.user.email)
 
 
 

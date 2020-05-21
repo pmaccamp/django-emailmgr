@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from utils import get_unique_random
+from .utils import get_unique_random
 from django.db.models import signals
 
 class EmailAddress(models.Model):
@@ -19,7 +19,7 @@ class EmailAddress(models.Model):
         unique_together = (("user", "email"),)
 
     def __unicode__(self):
-        return u"%s (%s)" % (self.email, self.user.username)
+        return "%s (%s)" % (self.email, self.user.username)
 
     def save(self, *args, **kwargs):
         if not self.identifier:

@@ -1,13 +1,13 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib import messages as Msg
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from forms import EmailAddressForm
-from models import EmailAddress
-from utils import send_activation, get_template, sort_email
+from .forms import EmailAddressForm
+from .models import EmailAddress
+from .utils import send_activation, get_template, sort_email
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from signals import user_added_email, user_sent_activation, user_activated_email
@@ -28,13 +28,11 @@ def email_add(request):
     else:
         form = EmailAddressForm(user=request.user)
     emails_list = EmailAddress.objects.filter(user=request.user).order_by(*sort_email())
-    return render_to_response(get_template('emailmgr_email_list.html'),
+    return render(request, 'emailmgr_email_list.html',
                               {
                                 'email_list': emails_list,
                                 'email_form': form
-                              },
-                              context_instance=RequestContext(request)
-                              )
+                              })
 
 @login_required
 def email_make_primary(request, identifier="somekey"):
@@ -137,13 +135,11 @@ def email_list(request):
     """
     form = EmailAddressForm(user=request.user)
     emails_list = EmailAddress.objects.filter(user=request.user).order_by(*sort_email())
-    return render_to_response(get_template('emailmgr_email_list.html'),
+    return render(request, 'emailmgr_email_list.html',
                               {
                                 'email_list': emails_list,
                                 'email_form': form
-                              },
-                              context_instance=RequestContext(request)
-                              )
+                              })
 
 
 
