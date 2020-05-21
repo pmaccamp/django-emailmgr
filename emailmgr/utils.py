@@ -2,7 +2,7 @@ import os, random, string, time
 from django.conf import settings
 from django.db import models, IntegrityError
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from hashlib import sha1
