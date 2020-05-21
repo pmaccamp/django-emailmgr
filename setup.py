@@ -5,7 +5,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='django-emailmgr',
-    version='3.1',
+    version='2.1',
     description = "An email manager for Django user",
     long_description = read('README'),
     author='Val L33',
